@@ -6,7 +6,96 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1beba19-492e-4df0-8bce-e71a862c743f" name="Default" comment="" />
+    <list default="true" id="d1beba19-492e-4df0-8bce-e71a862c743f" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/app/MyApp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/app/Styles$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/app/Styles$Companion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/app/Styles.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/model/Item.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/util/VideoUtil$downloadTsFile$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/util/VideoUtil$downloadTsFile$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/util/VideoUtil$downloadTsFile$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/util/VideoUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/util/VideoUtils$decryptTs$tsFiles$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/util/VideoUtils$decryptTs$tsFiles$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/util/VideoUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1$2$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1$3$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1$3$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1$2$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1$2$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1$2$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1$2$2$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1$2$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView$root$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/AboutView.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$3$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$5$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$root$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$startDownload$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$startDownload$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$startDownload$1$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$startDownload$1$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$startDownload$1$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView$startDownload$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/ItemView.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$1$1$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$1$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$2$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$2$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$3$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$4$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$5$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$5$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$5$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView$root$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/wan/view/MainView.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/img/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/img/weixin.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/img/zhifubao.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/tornadofx-maven-project-1.0.jar" beforeDir="false" />
+    </list>
     <ignored path="tornadofx-empty-project.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -114,7 +203,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/com/wan/view/ItemView.kt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="609">
-              <caret line="84" column="13" lean-forward="true" selection-start-line="84" selection-start-column="13" selection-end-line="84" selection-end-column="13" />
+              <caret line="84" column="13" selection-start-line="84" selection-start-column="13" selection-end-line="84" selection-end-column="13" />
               <folding>
                 <element signature="e#22#401#0" expanded="true" />
               </folding>
@@ -135,7 +224,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/com/wan/view/AboutView.kt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="238">
-              <caret line="26" column="13" lean-forward="true" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+              <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
               <folding>
                 <element signature="e#22#186#0" expanded="true" />
               </folding>
@@ -172,6 +261,9 @@
     <dirStrings>
       <dir>C:\Users\es\Projects\tornadofx-idea-plugin\template-projects\tornadofx-maven-project</dir>
     </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GradleLocalSettings">
     <option name="modificationStamps">
@@ -262,6 +354,7 @@
     <option name="width" value="1615" />
     <option name="height" value="880" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -601,12 +694,12 @@
       <workItem from="1577087045477" duration="7900000" />
       <workItem from="1577857836536" duration="2786000" />
       <workItem from="1578451703985" duration="1531000" />
-      <workItem from="1578987798959" duration="27167000" />
+      <workItem from="1578987798959" duration="27795000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="147897000" />
+    <option name="totallyTimeSpent" value="148525000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -870,7 +963,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/com/wan/view/ItemView.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="609">
-          <caret line="84" column="13" lean-forward="true" selection-start-line="84" selection-start-column="13" selection-end-line="84" selection-end-column="13" />
+          <caret line="84" column="13" selection-start-line="84" selection-start-column="13" selection-end-line="84" selection-end-column="13" />
           <folding>
             <element signature="e#22#401#0" expanded="true" />
           </folding>
@@ -880,7 +973,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/com/wan/view/AboutView.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
-          <caret line="26" column="13" lean-forward="true" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
           <folding>
             <element signature="e#22#186#0" expanded="true" />
           </folding>
