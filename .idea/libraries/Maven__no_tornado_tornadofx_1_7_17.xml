@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: no.tornado:tornadofx:1.7.17">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/no/tornado/tornadofx/1.7.17/tornadofx-1.7.17.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/no/tornado/tornadofx/1.7.17/tornadofx-1.7.17-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/no/tornado/tornadofx/1.7.17/tornadofx-1.7.17-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
