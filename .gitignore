@@ -1,6 +1,9 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Java template
 # Compiled class file
+out/
+.idea/
+target/
 *.class
 
 # Log file
