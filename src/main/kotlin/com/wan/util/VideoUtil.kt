@@ -59,10 +59,13 @@ class VideoUtil {
                 downloadM3u8File(m3u8Url, dirFile!!)
                 //解析m3u8文件
                 getMessageFromM3u8File(m3u8File)
-                // 初始化解密工具对象
-                val skey = SecretKeySpec(keyBytes, algorithm)
-                val iv = IvParameterSpec(ivBytes)
-                cipher.init(Cipher.DECRYPT_MODE, skey, iv)
+                //需要解密则初始化解密工具
+                if (isEncrypt) {
+                    // 初始化解密工具对象
+                    val skey = SecretKeySpec(keyBytes, algorithm)
+                    val iv = IvParameterSpec(ivBytes)
+                    cipher.init(Cipher.DECRYPT_MODE, skey, iv)
+                }
             } else {
                 println("该网址不是一个m3u8文件")
             }

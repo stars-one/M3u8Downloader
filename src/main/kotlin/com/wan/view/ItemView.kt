@@ -21,7 +21,7 @@ import java.io.File
  * @description
  *
  */
-class ItemView : Fragment {
+class ItemView : View {
     private var videoName by singleAssign<Label>()
     private var flagText by singleAssign<Text>()
     private var progressbar by singleAssign<JFXProgressBar>()
