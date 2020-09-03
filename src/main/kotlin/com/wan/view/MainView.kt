@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox
 import kfoenix.jfxbutton
 import tornadofx.*
 
-class MainView : View("m3u8视频下载合并器 by stars-one") {
+class MainView : View("m3u8视频下载合并器1.1 by stars-one") {
     private var m3u8UrlInput by singleAssign<TextField>()//m3u8文件地址输入框
     private var dirInput by singleAssign<TextField>()//下载目录输入框
     private var threadCountInput by singleAssign<TextField>()//多线程数目输入框

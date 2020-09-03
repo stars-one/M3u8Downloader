@@ -17,7 +17,7 @@ class AboutView : View(" by stars-one") {
             paddingTop = 10.0
             spacing = 10.0
             setPrefSize(800.0, 500.0)
-            text("m3u8视频下载合并器v1.0") {
+            text("m3u8视频下载合并器v1.1") {
                 alignment = Pos.TOP_CENTER
                 style {
                     fontWeight = FontWeight.BOLD
@@ -44,7 +44,7 @@ class AboutView : View(" by stars-one") {
                         }
 
                         field("博客地址：") {
-                            hyperlink("www.cnblogs.com/stars-one") {
+                            hyperlink("stars-one.site") {
                                 tooltip(this.text.toString())
                                 maxWidth = 300.0
                                 setOnMouseClicked {
