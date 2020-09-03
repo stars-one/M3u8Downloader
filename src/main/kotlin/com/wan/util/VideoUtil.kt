@@ -61,6 +61,7 @@ class VideoUtil {
                 //解析m3u8文件
                 getMessageFromM3u8File(m3u8File)
                 //需要解密则初始化解密工具
+                //新增判断决定是否解密
                 if (isEncrypt) {
                     // 初始化解密工具对象
                     val skey = SecretKeySpec(keyBytes, algorithm)
