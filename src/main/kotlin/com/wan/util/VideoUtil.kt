@@ -3,6 +3,7 @@ package com.wan.util
 import org.apache.commons.io.FileUtils
 import java.io.File
 import java.net.URL
+import java.util.concurrent.CountDownLatch
 import java.util.regex.Pattern
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
@@ -21,7 +22,7 @@ class VideoUtil {
     var downloadedFlag = false
 
     private var dirFile: File? = null
-     var tsUrls = arrayListOf<String>()
+    var tsUrls = arrayListOf<String>()
     private val tsFiles = arrayListOf<File>() //所有ts文件列表
     private val outTsFiles = arrayListOf<File>() //已解密的ts文件列表
     private val tsNames = arrayListOf<String>() //m3u8文件中的正确顺序的ts文件名
@@ -53,7 +54,7 @@ class VideoUtil {
         }
         val m3u8File = File(dirFile, "index.m3u8")
         if (Pattern.matches(urlRegex, m3u8Url)) {
-            if (m3u8Url.endsWith(".m3u8")) {
+            if (m3u8Url.contains("m3u8", true)) {
                 webUrl = m3u8Url.substringBeforeLast("/")
                 //从url下载m3u8文件
                 downloadM3u8File(m3u8Url, dirFile!!)
@@ -97,32 +98,27 @@ class VideoUtil {
                 downloadTsList(list)
             }
         }
-        /*val countDownLatch = CountDownLatch(threadCount)
-        val step = tsUrls.size / threadCount
-        val yu = tsUrls.size % threadCount
-        thread {
-            val firstList = tsUrls.take(step)
-            downloadTsList(firstList)
-            countDownLatch.countDown()
-        }
-        thread {
-            val lastList = tsUrls.takeLast(step + yu)
-            downloadTsList(lastList)
-            countDownLatch.countDown()
-        }
-
-        for (i in 1..threadCount - 2) {
-            val list = tsUrls.subList(i * step, (i + 1) * step + 1)
-            thread {
-                downloadTsList(list)
-                countDownLatch.countDown()
-            }
-        }
-        countDownLatch.await()
-        println("所有ts文件下载完毕")*/
     }
 
-    private fun downloadTsList(tsUrls: List<String>){
+
+    /**
+     * 按照顺序单线程下载并合并
+     */
+    fun downloadAndMerageTsList() {
+        tsUrls.forEachIndexed { index, tsUrl ->
+            val file = File(dirFile, tsNames[index])
+            downloadFile(tsUrl, file)
+            tsFiles.add(file)
+        }
+        val outputFile = File(dirFile,"out.mp4")
+        for (tsFile in tsFiles) {
+            outputFile.appendBytes(tsFile.readBytes())
+            tsFile.delete()
+        }
+        println(outputFile)
+    }
+
+    private fun downloadTsList(tsUrls: List<String>) {
         for (tsUrl in tsUrls) {
             val tsFile = File(dirFile, tsUrl.substringAfterLast("/"))
             if (!tsFile.exists()) {
@@ -136,6 +132,7 @@ class VideoUtil {
             //println("${tsFile.name}文件已下载")
         }
     }
+
     /**
      * 解密所有的ts文件
      */
@@ -168,7 +165,7 @@ class VideoUtil {
      */
     fun mergeTsFile(fileName: String = "out.mp4"): File {
 
-        val outFile = if (!fileName.endsWith(".mp4")) File(dirFile, "$fileName.mp4")  else File(dirFile, fileName)
+        val outFile = if (!fileName.endsWith(".mp4")) File(dirFile, "$fileName.mp4") else File(dirFile, fileName)
         //如果加密了，对解密出来的ts文件合并
         if (isEncrypt) {
             for (tsName in tsNames) {
@@ -212,6 +209,9 @@ class VideoUtil {
 
         //读取m3u8（注意是utf-8格式）
         val readLines = m3u8File.readLines(charset("utf-8"))
+        //ts索引
+        var tsIndex = 0
+
         for (line in readLines) {
             //是否为AES128加密
             if (line.contains("AES-128")) {
@@ -234,17 +234,23 @@ class VideoUtil {
                 ivBytes = if (ivString.isBlank()) byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) else decodeHex(ivString)
                 isEncrypt = true
             }
-            if (line.endsWith(".ts")) {
+            if (line.contains("ts", true)) {
                 //ts是否是链接形式
-                if (Pattern.matches(urlRegex, line)) {
-                    val tsName = line.substringAfterLast("/")
-                    tsNames.add(tsName)
-                    tsUrls.add(line)
+                if (line.endsWith(".ts")) {
+                    if (Pattern.matches(urlRegex, line)) {
+                        val tsName = line.substringAfterLast("/")
+                        tsNames.add(tsName)
+                        tsUrls.add(line)
+                    } else {
+                        //按顺序添加ts文件名，之后合并需要
+                        tsNames.add(line)
+                        //拼接ts文件的url地址，添加到列表中
+                        tsUrls.add("$webUrl/$line")
+                    }
                 } else {
-                    //按顺序添加ts文件名，之后合并需要
-                    tsNames.add(line)
-                    //拼接ts文件的url地址，添加到列表中
+                    tsNames.add("$tsIndex.ts")
                     tsUrls.add("$webUrl/$line")
+                    tsIndex++
                 }
             }
         }
@@ -282,7 +288,10 @@ class VideoUtil {
         val conn = URL(url).openConnection()
         conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)")
         val bytes = conn.getInputStream().readBytes()
-        file.writeBytes(bytes)
+        if (bytes.size.toLong() != file.length()) {
+            file.writeBytes(bytes)
+        }
+        println("--已下载${file.name}")
     }
 
     /**
