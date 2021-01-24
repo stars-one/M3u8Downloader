@@ -1,9 +1,7 @@
 package com.wan.util
 
-import org.apache.commons.io.FileUtils
 import java.io.File
 import java.net.URL
-import java.util.concurrent.CountDownLatch
 import java.util.regex.Pattern
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
@@ -17,15 +15,15 @@ import kotlin.concurrent.thread
  * @description
  *
  */
-class VideoUtil {
+class VideoUtil(val m3u8Url: String, val dirPath: String) {
     var progess = 0
     var downloadedFlag = false
 
-    private var dirFile: File? = null
+    var dirFile: File? = null
     var tsUrls = arrayListOf<String>()
-    private val tsFiles = arrayListOf<File>() //所有ts文件列表
+    val tsFiles = arrayListOf<File>() //所有ts文件列表
     private val outTsFiles = arrayListOf<File>() //已解密的ts文件列表
-    private val tsNames = arrayListOf<String>() //m3u8文件中的正确顺序的ts文件名
+    val tsNames = arrayListOf<String>() //m3u8文件中的正确顺序的ts文件名
 
     private var isEncrypt = false    //当前m3u8文件是否使用加密
     private var webUrl = "" //当前m3u8文件url的前缀网址
@@ -38,12 +36,9 @@ class VideoUtil {
     private var ivBytes = byteArrayOf()
 
     /**
-     * @param m3u8Url m3u8网址
-     * @param dirPath 下载的目录（之后下载的ts文件以及合并的输出的mp4文件都在此目录下）
-     *
+     * 下载m3u8文件并解析,初始化相关的解密类
      */
-    constructor(m3u8Url: String, dirPath: String) {
-
+    fun parseM3u8File() {
         //输入错误检测（判断m3u8Url是网址）
         val urlRegex = "[a-zA-z]+://[^\\s]*"
 
@@ -111,7 +106,7 @@ class VideoUtil {
             downloadFile(tsUrl, file)
             tsFiles.add(file)
         }
-        val outputFile = File(dirFile,"out.mp4")
+        val outputFile = File(dirFile, "out.mp4")
         for (tsFile in tsFiles) {
             outputFile.appendBytes(tsFile.readBytes())
             tsFile.delete()
@@ -173,7 +168,7 @@ class VideoUtil {
                 for (outTsFile in outTsFiles) {
                     //某些ts文件可能解密失败，所以得判断文件是否存在
                     if (outTsFile.name.contains(tsName) && outTsFile.exists()) {
-                        FileUtils.writeByteArrayToFile(outFile, outTsFile.readBytes(), true)
+                        outFile.appendBytes(outTsFile.readBytes())
                         //追加之后删除文件
                         outTsFile.delete()
                         break
@@ -186,7 +181,7 @@ class VideoUtil {
             for (tsName in tsNames) {
                 for (tsFile in tsFiles) {
                     if (tsFile.name.contains(tsName) && tsFile.exists()) {
-                        FileUtils.writeByteArrayToFile(outFile, tsFile.readBytes(), true)
+                        outFile.appendBytes(tsFile.readBytes())
                         break
                     }
                 }
@@ -205,7 +200,7 @@ class VideoUtil {
     /**
      * 从m3u8文件中获取ts文件的地址、key的信息以及IV
      */
-    private fun getMessageFromM3u8File(m3u8File: File) {
+    fun getMessageFromM3u8File(m3u8File: File) {
         val urlRegex = "[a-zA-z]+://[^\\s]*"//网址正则表达式
 
         //读取m3u8（注意是utf-8格式）
@@ -235,23 +230,20 @@ class VideoUtil {
                 ivBytes = if (ivString.isBlank()) byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) else decodeHex(ivString)
                 isEncrypt = true
             }
-            if (line.contains("ts", true)) {
+            if (line.contains(".ts", true)) {
                 //ts是否是链接形式
-                if (line.endsWith(".ts")) {
-                    if (Pattern.matches(urlRegex, line)) {
-                        val tsName = line.substringAfterLast("/")
-                        tsNames.add(tsName)
-                        tsUrls.add(line)
-                    } else {
-                        //按顺序添加ts文件名，之后合并需要
-                        tsNames.add(line)
-                        //拼接ts文件的url地址，添加到列表中
-                        tsUrls.add("$webUrl/$line")
-                    }
-                } else {
-                    tsNames.add("$tsIndex.ts")
-                    tsUrls.add("$webUrl/$line")
+                if (Pattern.matches(urlRegex, line)) {
+                    val tsName ="$tsIndex.ts"
+                    tsNames.add(tsName)
+                    tsUrls.add(line)
+                    tsFiles.add(File(dirFile,tsName))
                     tsIndex++
+                } else {
+                    //按顺序添加ts文件名，之后合并需要
+                    tsNames.add(line)
+                    //拼接ts文件的url地址，添加到列表中
+                    tsUrls.add("$webUrl/$line")
+                    tsFiles.add(File(dirFile,line))
                 }
             }
         }

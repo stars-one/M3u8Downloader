@@ -1,6 +1,5 @@
 package com.wan.util
 
-import org.apache.commons.io.FileUtils
 import java.io.*
 import java.net.URL
 import java.util.regex.Pattern
@@ -35,7 +34,8 @@ class VideoUtils() {
     constructor(m3u8FilePath: String) : this() {
 
         m3u8File = File(m3u8FilePath)
-        val readLines = FileUtils.readLines(m3u8File, "utf-8")
+
+        val readLines = m3u8File?.readLines() as List<String>
 
         for (readLine in readLines) {
             if (readLine.contains("URI")) {
@@ -109,7 +109,7 @@ class VideoUtils() {
             for (file in outTsList) {
                 //文件存在就合并
                 if (file.exists()) {
-                    FileUtils.writeByteArrayToFile(outFile, file.readBytes(), true)
+                    outFile.appendBytes(file.readBytes())
                     //合并之后删除文件
                     file.delete()
                 }
@@ -132,7 +132,7 @@ class VideoUtils() {
             val outTsList = decryptTs(tsFiles.toList())
             for (file in outTsList) {
                 if (file.exists()) {
-                    FileUtils.writeByteArrayToFile(outFile, file.readBytes(), true)
+                    outFile.appendBytes(file.readBytes())
                     file.delete()
                 }
             }

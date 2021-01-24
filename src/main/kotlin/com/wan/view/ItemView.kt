@@ -1,8 +1,11 @@
 package com.wan.view
 
+import ItemViewBase
 import com.jfoenix.controls.JFXProgressBar
 import com.wan.model.Item
 import com.wan.util.VideoUtil
+import javafx.beans.property.DoubleProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Label
 import javafx.scene.control.Tooltip
@@ -10,6 +13,7 @@ import javafx.scene.text.FontWeight
 import javafx.scene.text.Text
 import kfoenix.jfxbutton
 import kfoenix.jfxprogressbar
+import site.starsone.download.KxDownloader
 import tornadofx.*
 import java.awt.Desktop
 import java.io.File
@@ -21,16 +25,14 @@ import java.io.File
  * @description
  *
  */
-class ItemView : View {
+class ItemView : ItemViewBase<Item, ItemView>(null, null) {
     private var videoName by singleAssign<Label>()
     private var flagText by singleAssign<Text>()
     private var progressbar by singleAssign<JFXProgressBar>()
 
-    private lateinit var item: Item
+    var itemViewModel = ItemViewModel()
 
-    constructor(item: Item){
-        this.item = item
-    }
+    private lateinit var item: Item
 
     override val root = hbox {
         alignment = Pos.CENTER_LEFT
@@ -52,55 +54,91 @@ class ItemView : View {
                 fontSize = Dimension(18.0, Dimension.LinearUnits.px)
             }
         }
-        flagText = text("下载中") {
+        flagText = text(itemViewModel.flagText) {
             style {
                 fill = c("green")
             }
         }
-        progressbar = jfxprogressbar { }
+        progressbar = jfxprogressbar {
+            itemViewModel.progress = progressProperty()
+        }
+
         jfxbutton("打开文件夹") {
             action {
                 Desktop.getDesktop().open(File(item.dirPath))
             }
         }
         jfxbutton("取消下载") { }
+
+        setDataChange()
     }
 
     fun startDownload() {
+        val (m3u8Url, outputFileName, threadCount, dirPath) = item
+        val videoUtil = VideoUtil(m3u8Url, dirPath)
+
+        itemViewModel.flagText.value = "下载m3u8文件及初始化"
+
         runAsync {
-            val (m3u8Url, outputFileName, threadCount, dirPath) = item
-            val videoUtil = VideoUtil(m3u8Url, dirPath)
+            videoUtil.parseM3u8File()
             runLater {
                 videoName.text = item.fileName
                 videoName.tooltip = Tooltip(item.fileName)
+                itemViewModel.flagText.value = "下载中"
             }
-            videoUtil.downloadTsFile(threadCount)//下载所有ts文件
-            while (videoUtil.progess!=videoUtil.tsUrls.size) {
-                println(videoUtil.progess)
-                Thread.sleep(100)
-                //更新进度条
-                runLater {
-                    progressbar.progress = videoUtil.progess / videoUtil.tsUrls.size.toDouble()
+
+            KxDownloader.downloadFileListByMultiThread(videoUtil.tsUrls, videoUtil.tsFiles) {
+                onProgress {
+                    runLater {
+                        itemViewModel.progress.value = it.progress
+                    }
+                    println(it.progress)
+                }
+
+                onItemError { downloadMessage, e ->
+                    println("${downloadMessage.file.name}:${e.message}")
+                }
+
+                onFinish {
+
+                    println("已下载完毕")
+                    runLater {
+                        itemViewModel.flagText.value = "解密中"
+                    }
+                    videoUtil.decryptTs()
+                    runLater {
+                        itemViewModel.flagText.value = "合并中"
+                        itemViewModel.progress.value = -1.0
+                    }
+                    //合并输出mp4文件
+                    if (outputFileName.isBlank()) {
+                        videoUtil.mergeTsFile()
+                    } else {
+                        videoUtil.mergeTsFile(outputFileName)
+                    }
+                    runLater {
+                        itemViewModel.flagText.value = "已完成"
+                        itemViewModel.progress.value = 1.0
+                    }
+
                 }
             }
-            runLater {
-                flagText.text = "解密中"
-                progressbar.progress = -1.0
-            }
-            videoUtil.decryptTs()//解密ts文件
-            runLater {
-                flagText.text = "合并中"
-            }
-            //合并输出mp4文件
-            if (outputFileName.isBlank()) {
-                videoUtil.mergeTsFile()
-            } else {
-                videoUtil.mergeTsFile(outputFileName)
-            }
-            runLater {
-                flagText.text = "已完成"
-                progressbar.progress = 1.0
-            }
         }
+
     }
+
+    override fun bindData(beanT: Item) {
+        item = beanT
+        videoName.text = item.fileName
+        startDownload()
+    }
+
+    override fun inputChange() {
+
+    }
+}
+
+class ItemViewModel : ViewModel() {
+    lateinit var progress: DoubleProperty
+    val flagText = SimpleStringProperty("")
 }
