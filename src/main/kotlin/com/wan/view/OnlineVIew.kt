@@ -119,5 +119,6 @@ class OnlineVIew : View("My View") {
         val item = Item(m3u8Url, outputFileName, threadCount, dirPath)
 
         dataList.add(item)
+
     }
 }

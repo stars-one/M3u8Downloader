@@ -17,6 +17,7 @@ import site.starsone.download.KxDownloader
 import tornadofx.*
 import java.awt.Desktop
 import java.io.File
+import kotlin.concurrent.thread
 
 /**
  *
@@ -73,55 +74,61 @@ class ItemView : ItemViewBase<Item, ItemView>(null, null) {
         setDataChange()
     }
 
+
     fun startDownload() {
         val (m3u8Url, outputFileName, threadCount, dirPath) = item
         val videoUtil = VideoUtil(m3u8Url, dirPath)
 
-        itemViewModel.flagText.value = "下载m3u8文件及初始化"
 
-        runAsync {
-            videoUtil.parseM3u8File()
-            runLater {
-                videoName.text = item.fileName
-                videoName.tooltip = Tooltip(item.fileName)
-                itemViewModel.flagText.value = "下载中"
+        //测试用的下载地址 https://video.buycar5.cn/20200813/uNqvsBhl/2000kb/hls/index.m3u8
+        KxDownloader.downloadFileListByMultiThread(videoUtil.tsUrls, videoUtil.tsFiles) {
+            onBefore {
+                runLater {
+                    itemViewModel.flagText.value = "下载m3u8文件及初始化"
+                }
+                videoUtil.parseM3u8File()
+
+                runLater {
+                    videoName.text = item.fileName
+                    videoName.tooltip = Tooltip(item.fileName)
+                    itemViewModel.flagText.value = "下载中"
+                }
+
             }
 
-            KxDownloader.downloadFileListByMultiThread(videoUtil.tsUrls, videoUtil.tsFiles) {
-                onProgress {
-                    runLater {
-                        itemViewModel.progress.value = it.progress
-                    }
-                    println(it.progress)
+            onProgress {
+                runLater {
+                    itemViewModel.progress.value = it.progress
+                }
+                println(it.progress)
+            }
+
+            onItemError { downloadMessage, e ->
+                println("${downloadMessage.file.name}:${e.message}")
+            }
+
+            onFinish {
+
+                println("已下载完毕")
+                runLater {
+                    itemViewModel.flagText.value = "解密中"
+                }
+                videoUtil.decryptTs()
+                runLater {
+                    itemViewModel.flagText.value = "合并中"
+                    itemViewModel.progress.value = -1.0
+                }
+                //合并输出mp4文件
+                if (outputFileName.isBlank()) {
+                    videoUtil.mergeTsFile()
+                } else {
+                    videoUtil.mergeTsFile(outputFileName)
+                }
+                runLater {
+                    itemViewModel.flagText.value = "已完成"
+                    itemViewModel.progress.value = 1.0
                 }
 
-                onItemError { downloadMessage, e ->
-                    println("${downloadMessage.file.name}:${e.message}")
-                }
-
-                onFinish {
-
-                    println("已下载完毕")
-                    runLater {
-                        itemViewModel.flagText.value = "解密中"
-                    }
-                    videoUtil.decryptTs()
-                    runLater {
-                        itemViewModel.flagText.value = "合并中"
-                        itemViewModel.progress.value = -1.0
-                    }
-                    //合并输出mp4文件
-                    if (outputFileName.isBlank()) {
-                        videoUtil.mergeTsFile()
-                    } else {
-                        videoUtil.mergeTsFile(outputFileName)
-                    }
-                    runLater {
-                        itemViewModel.flagText.value = "已完成"
-                        itemViewModel.progress.value = 1.0
-                    }
-
-                }
             }
         }
 
@@ -130,7 +137,11 @@ class ItemView : ItemViewBase<Item, ItemView>(null, null) {
     override fun bindData(beanT: Item) {
         item = beanT
         videoName.text = item.fileName
-        startDownload()
+
+        //开启线程执行任务,避免UI线程堵塞
+        thread {
+            startDownload()
+        }
     }
 
     override fun inputChange() {
