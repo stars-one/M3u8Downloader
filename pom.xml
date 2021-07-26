@@ -28,7 +28,7 @@
         <dependency>
             <groupId>site.starsone</groupId>
             <artifactId>KxDownload</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.github.Stars-One</groupId>
