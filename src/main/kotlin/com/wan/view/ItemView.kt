@@ -1,14 +1,14 @@
 package com.wan.view
 
 import ItemViewBase
+import M3u8Info
+import M3u8Util
 import com.jfoenix.controls.JFXProgressBar
 import com.wan.model.Item
-import com.wan.util.VideoUtil
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Label
-import javafx.scene.control.Tooltip
 import javafx.scene.text.FontWeight
 import javafx.scene.text.Text
 import kfoenix.jfxbutton
@@ -74,64 +74,75 @@ class ItemView : ItemViewBase<Item, ItemView>(null, null) {
         setDataChange()
     }
 
-
     fun startDownload() {
         val (m3u8Url, outputFileName, threadCount, dirPath) = item
-        val videoUtil = VideoUtil(m3u8Url, dirPath)
 
+        val m3u8File = File(dirPath, "index.m3u8")
+        val outputFile = File(dirPath, outputFileName)
+        val m3u8Info = M3u8Info(file = m3u8File, outputFile = outputFile)
+        m3u8Info.url = m3u8Url
 
-        //测试用的下载地址 https://video.buycar5.cn/20200813/uNqvsBhl/2000kb/hls/index.m3u8
-        KxDownloader.downloadFileListByMultiThread(videoUtil.tsUrls, videoUtil.tsFiles) {
-            onBefore {
-                runLater {
-                    itemViewModel.flagText.value = "下载m3u8文件及初始化"
-                }
-                videoUtil.parseM3u8File()
+        runLater {
+            itemViewModel.flagText.value = "下载m3u8文件及初始化"
+        }
 
-                runLater {
-                    videoName.text = item.fileName
-                    videoName.tooltip = Tooltip(item.fileName)
-                    itemViewModel.flagText.value = "下载中"
-                }
-
-            }
-
+        M3u8Util.parseInfo(m3u8Info) {
             onProgress {
-                runLater {
-                    itemViewModel.progress.value = it.progress
-                }
-                println(it.progress)
-            }
-
-            onItemError { downloadMessage, e ->
-                println("${downloadMessage.file.name}:${e.message}")
+                println(it.percent)
             }
 
             onFinish {
-
-                println("已下载完毕")
                 runLater {
-                    itemViewModel.flagText.value = "解密中"
-                }
-                videoUtil.decryptTs()
-                runLater {
-                    itemViewModel.flagText.value = "合并中"
-                    itemViewModel.progress.value = -1.0
-                }
-                //合并输出mp4文件
-                if (outputFileName.isBlank()) {
-                    videoUtil.mergeTsFile()
-                } else {
-                    videoUtil.mergeTsFile(outputFileName)
-                }
-                runLater {
-                    itemViewModel.flagText.value = "已完成"
-                    itemViewModel.progress.value = 1.0
+                    itemViewModel.flagText.value = "m3u8文件解析中"
                 }
 
+                val urlList = arrayListOf<String>()
+                val fileList = arrayListOf<File>()
+                m3u8Info.tsInfoList.forEach {
+                    it.tsFiles.forEach { file ->
+                        fileList.add(file)
+                    }
+                    it.tsUrlList.forEach { url ->
+                        urlList.add(url)
+                    }
+                }
+
+                runLater {
+                    itemViewModel.flagText.value = "下载视频文件中"
+                }
+
+                KxDownloader.downloadFileListByMultiThread(urlList, fileList, m3u8Info.httpParam, null) {
+                    onItemFinish {
+                        println(it.file.name + "已下载完成")
+                    }
+                    onItemError { downloadMessage, e ->
+                        println(downloadMessage.file.name + "失败,原因" + e.message)
+                    }
+                    onProgress {
+                        runLater {
+                            itemViewModel.progress.value = it.progress
+                        }
+                    }
+                    onFinish {
+                        runLater {
+                            itemViewModel.flagText.value = "解密中"
+                        }
+                        println("全部下载完毕")
+                        M3u8Util.decrypt(m3u8Info)
+                        runLater {
+                            itemViewModel.flagText.value = "合并视频中"
+                        }
+                        println("解密完成")
+                        M3u8Util.merge(m3u8Info)
+                        runLater {
+                            itemViewModel.flagText.value = "已完成"
+                            itemViewModel.progress.value = 1.0
+                        }
+                    }
+
+                }
             }
         }
-
     }
 
     override fun bindData(beanT: Item) {

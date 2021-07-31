@@ -20,7 +20,7 @@ class MainView : View("m3u8视频下载合并器1.1 by stars-one") {
 
         jfxtabpane {
             tab("在线m3u8下载及解密合并") {
-                this += OnlineVIew()
+                this += OnlineView()
             }
             tab("本地m3u8文件解密合并") {
                 this += LocalView()

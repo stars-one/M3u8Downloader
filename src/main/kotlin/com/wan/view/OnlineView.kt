@@ -15,7 +15,7 @@ import tornadofx.*
  * @date Create in  2020/12/31 16:00
  *
  */
-class OnlineVIew : View("My View") {
+class OnlineView : View("My View") {
     private var m3u8UrlInput by singleAssign<TextField>()//m3u8文件地址输入框
     private var dirInput by singleAssign<TextField>()//下载目录输入框
     private var threadCountInput by singleAssign<TextField>()//多线程数目输入框
@@ -30,7 +30,7 @@ class OnlineVIew : View("My View") {
             fieldset {
                 field {
                     text("m3u8文件地址：")
-                    m3u8UrlInput = textfield {
+                    m3u8UrlInput = textfield("https://1252524126.vod2.myqcloud.com/9764a7a5vodtransgzp1252524126/031337323701925918743962377/drm/v.f146750.m3u8\n") {
                         promptText = "输入m3u8文件的在线地址"
                     }
                 }
