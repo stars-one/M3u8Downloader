@@ -216,13 +216,15 @@ class VideoUtil(val m3u8Url: String, val dirPath: String) {
                 val last = line.lastIndexOf("\"")
                 val keyUrl = line.substring(start + 1, last)
 
-                //keyUrl可能是网址
-                keyBytes = if (Pattern.matches(urlRegex, keyUrl)) {
-                    downloadKeyFile(keyUrl, m3u8File.parentFile)
-                } else {
-                    //不是网址，则进行拼接
-                    // 拼接key文件的url文件，并下载在本地，获得key文件的字节数组
-                    downloadKeyFile("$webUrl/$keyUrl", m3u8File.parentFile)
+                if (keyBytes.size == 0) {
+                    //keyUrl可能是网址
+                    keyBytes = if (Pattern.matches(urlRegex, keyUrl)) {
+                        downloadKeyFile(keyUrl, m3u8File.parentFile)
+                    } else {
+                        //不是网址，则进行拼接
+                        // 拼接key文件的url文件，并下载在本地，获得key文件的字节数组
+                        downloadKeyFile("$webUrl/$keyUrl", m3u8File.parentFile)
+                    }
                 }
                 //获得偏移量IV字符串
                 val ivString = if (line.contains("IV=0x")) line.substringAfter("IV=0x") else ""
@@ -233,17 +235,21 @@ class VideoUtil(val m3u8Url: String, val dirPath: String) {
             if (line.contains(".ts", true)) {
                 //ts是否是链接形式
                 if (Pattern.matches(urlRegex, line)) {
-                    val tsName ="$tsIndex.ts"
+                    val tsName = "$tsIndex.ts"
                     tsNames.add(tsName)
-                    tsUrls.add(line)
-                    tsFiles.add(File(dirFile,tsName))
+                    tsFiles.add(File(dirFile, tsName))
                     tsIndex++
                 } else {
                     //按顺序添加ts文件名，之后合并需要
-                    tsNames.add(line)
+                    val tsName = if (line.contains("ts?")) {
+                        line.substringBefore("?")
+                    } else {
+                        line
+                    }
+                    tsNames.add(tsName)
                     //拼接ts文件的url地址，添加到列表中
                     tsUrls.add("$webUrl/$line")
-                    tsFiles.add(File(dirFile,line))
+                    tsFiles.add(File(dirFile, tsName))
                 }
             }
         }
