@@ -9,13 +9,14 @@ import javax.crypto.spec.SecretKeySpec
 
 fun main() {
 
-    val dirFile = "D:\\temp\\m3u8\\test6"
+    val dirFile = "D:\\temp\\m3u8\\test1"
 
     val m3u8File = File(dirFile, "test.m3u8")
     val outputFile = File(dirFile, "output.mp4")
     val m3u8Info = M3u8Info(file = m3u8File, outputFile = outputFile)
-    m3u8Info.url = "https://video.dious.cc/20200617/fYdT3OVu/1000kb/hls/index.m3u8"
+    //m3u8Info.url = "https://video.dious.cc/20200617/fYdT3OVu/1000kb/hls/index.m3u8"
     //m3u8Info.url = "https://v5.szjal.cn/20201205/HNH1sNwn/index.m3u8"
+    m3u8Info.url = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8"
 
 
     M3u8Util.parseInfo(m3u8Info) {
@@ -117,11 +118,17 @@ class M3u8Util {
 
             //固定获得声明是否有key加密的那行的下标
             val indexList = arrayListOf<Int>()
-            readLines.forEachIndexed { index, s ->
-                if (s.contains("#EXT-X-KEY")) {
-                    indexList.add(index)
+            val hasKey = readLines.filter { it.contains("#EXT-X-KEY") }.isNotEmpty()
+            if (hasKey) {
+                readLines.forEachIndexed { index, s ->
+                    if (s.contains("#EXT-X-KEY")) {
+                        indexList.add(index)
+                    }
                 }
+            } else {
+                indexList.add(0)
             }
+
             //最末尾的行数下标
             indexList.add(readLines.size)
 
@@ -221,12 +228,19 @@ class M3u8Util {
             val outputFile = m3u8Info.outputFile
             println("合并中")
             m3u8Info.tsInfoList.forEach {
-                it.tempTsFiles.forEach { file ->
+                // 如果是加密,取解密的ts文件列表
+                val tsFileList = if (it.keyByteArray.isNotEmpty()) {
+                    it.tempTsFiles
+                } else {
+                    it.tsFiles
+                }
+                tsFileList.forEach { file ->
                     if (file.exists()) {
                         outputFile.appendBytes(file.readBytes())
                         file.delete()
                     }
                 }
+
             }
             //todo key文件和m3u8文件删除
             m3u8Info.tsInfoList.forEach {
