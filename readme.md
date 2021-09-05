@@ -1,7 +1,7 @@
 # m3u8视频下载合并器
 一款只需要输入m3u8的网址即可完成视频下载、解密和合并操作的工具
 
-[1.0的蓝奏云下载地址](https://www.lanzous.com/i8ov2mh)
+[1.0的蓝奏云下载地址](https://www.lanzoux.com/i8ov2mh)
 
 [github地址](https://github.com/Stars-One/M3u8Downloader)
 
