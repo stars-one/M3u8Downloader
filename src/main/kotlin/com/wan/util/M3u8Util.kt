@@ -315,8 +315,9 @@ class M3u8Util {
          * 合并输出文件
          *
          * @param m3u8Info
+         * @param isDelete 是否在合并后删除相关文件
          */
-        fun merge(m3u8Info: M3u8Info) {
+        fun merge(m3u8Info: M3u8Info,isDelete:Boolean = true) {
             val outputFile = m3u8Info.outputFile
             println("合并中")
             m3u8Info.tsInfoList.forEach {
@@ -334,16 +335,17 @@ class M3u8Util {
                 }
 
             }
-            //todo key文件和m3u8文件删除
-            m3u8Info.tsInfoList.forEach {
-                for (tsFile in it.tsFiles) {
-                    tsFile.delete()
-                }
-                for (tempTsFile in it.tempTsFiles) {
-                    tempTsFile.delete()
+            if (isDelete) {
+                //todo key文件和m3u8文件删除
+                m3u8Info.tsInfoList.forEach {
+                    for (tsFile in it.tsFiles) {
+                        tsFile.delete()
+                    }
+                    for (tempTsFile in it.tempTsFiles) {
+                        tempTsFile.delete()
+                    }
                 }
             }
-
             println("合并完成")
 
         }
