@@ -30,7 +30,7 @@ class OnlineView : View("My View") {
             fieldset {
                 field {
                     text("m3u8文件地址：")
-                    m3u8UrlInput = textfield("https://1252524126.vod2.myqcloud.com/9764a7a5vodtransgzp1252524126/031337323701925918743962377/drm/v.f146750.m3u8\n") {
+                    m3u8UrlInput = textfield("") {
                         promptText = "输入m3u8文件的在线地址"
                     }
                 }
