@@ -1,3 +1,4 @@
+
 import site.starsone.download.KxDownloader
 import site.starsone.model.DownloadMessage
 import site.starsone.model.HttpParam
@@ -9,6 +10,32 @@ import javax.crypto.spec.SecretKeySpec
 
 fun main() {
 
+    //输入一个m3u8地址,下载视频并合并单视频文件
+    downloadVideoFormNetWork()
+
+    //从已下载好的m3u8文件和ts文件中进行解密合并成单视频文件
+    mergeLocalVideo()
+}
+
+/**
+ * 合并本地视频
+ *
+ */
+fun mergeLocalVideo() {
+    val m3u8File = File("D:\\temp\\m3u8\\test2\\test.m3u8")
+    val outputFile = File(m3u8File.parent, "output.mp4")
+    val m3u8Info = M3u8Info(file = m3u8File, outputFile = outputFile)
+    M3u8Util.parseInfoForLocal(m3u8Info)
+    M3u8Util.decrypt(m3u8Info)
+    M3u8Util.merge(m3u8Info)
+}
+
+/**
+ * 网络的m3u8下载
+ *
+ */
+fun downloadVideoFormNetWork() {
+
     val dirFile = "D:\\temp\\m3u8\\test1"
 
     val m3u8File = File(dirFile, "test.m3u8")
@@ -16,7 +43,9 @@ fun main() {
     val m3u8Info = M3u8Info(file = m3u8File, outputFile = outputFile)
     //m3u8Info.url = "https://video.dious.cc/20200617/fYdT3OVu/1000kb/hls/index.m3u8"
     //m3u8Info.url = "https://v5.szjal.cn/20201205/HNH1sNwn/index.m3u8"
-    m3u8Info.url = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8"
+    //m3u8Info.url = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8"
+    //m3u8Info.url = "https://vod.bunediy.com/20210328/yzhmPJjo/index.m3u8"
+    m3u8Info.url = "https://v3.dious.cc/20210328/Z9bAPwl2/1000kb/hls/index.m3u8?skipl=1"
 
 
     M3u8Util.parseInfo(m3u8Info) {
@@ -98,16 +127,6 @@ class M3u8Util {
             }
         }
 
-
-        /**
-         * 处理本地已下载好的方法
-         *
-         * @param m3u8Info
-         */
-        fun parseInfo(m3u8Info: M3u8Info) {
-
-        }
-
         /**
          * 从m3u8文件中获取ts文件的地址、key的信息以及IV
          */
@@ -152,7 +171,6 @@ class M3u8Util {
                         val keyFile = KxDownloader.downloadFile(keyUrl, File(m3u8File.parentFile, "key${m3u8Info.tsInfoList.size}.key"))
                         keyFile.readBytes()
                     } else {
-                        //todo 考虑到本地的情况,该怎么判断
                         //不是网址，则进行拼接
                         // 拼接key文件的url文件，并下载在本地，获得key文件的字节数组
                         val keyFile = KxDownloader.downloadFile("${m3u8Info.webUrl}/$keyUrl", File(m3u8File.parentFile, "key${m3u8Info.tsInfoList.size}.key"))
@@ -185,6 +203,80 @@ class M3u8Util {
                         } else {
                             tsUrlList.add("${m3u8Info.webUrl}/$line")
                         }
+                    }
+                }
+            }
+
+        }
+
+
+        /**
+         * 本地合并功能入口(从本地下载好的m3u8获取信息)
+         *
+         * @param m3u8Info 里面需要存有m3u8文件的路径
+         */
+        public fun parseInfoForLocal(m3u8Info: M3u8Info) {
+            val m3u8File = m3u8Info.file
+            val dirFile = m3u8File.parentFile
+            //读取m3u8（注意是utf-8格式）
+            val readLines = m3u8File.readLines(charset("utf-8"))
+
+            //固定获得声明是否有key加密的那行的下标
+            val indexList = arrayListOf<Int>()
+            val hasKey = readLines.filter { it.contains("#EXT-X-KEY") }.isNotEmpty()
+            if (hasKey) {
+                readLines.forEachIndexed { index, s ->
+                    if (s.contains("#EXT-X-KEY")) {
+                        indexList.add(index)
+                    }
+                }
+            } else {
+                indexList.add(0)
+            }
+
+            //最末尾的行数下标
+            indexList.add(readLines.size)
+
+            //将整个m3u8文件分割成几份,获得对应的key和ts的url地址
+            for (i in 0 until indexList.size - 1) {
+                val startIndex = indexList[i]
+                val endIndex = indexList[i + 1]
+
+                val subList = readLines.subList(startIndex, endIndex)
+
+                //获取key的信息
+                val keyLine = subList.find { it.contains("AES-128") }
+                if (keyLine != null) {
+                    //获得key的url
+                    val start = keyLine.indexOf("\"")
+                    val last = keyLine.lastIndexOf("\"")
+                    val keyUrl = keyLine.substring(start + 1, last)
+
+                    //keyUrl可能是网址
+                    val keyBytes = if (Pattern.matches(urlRegex, keyUrl)) {
+                        val keyFile = KxDownloader.downloadFile(keyUrl, File(dirFile, "key${m3u8Info.tsInfoList.size}.key"))
+                        keyFile.readBytes()
+                    } else {
+                        //不是网址，则是文件名
+                        val keyFile = File(dirFile,keyUrl)
+                        keyFile.readBytes()
+                    }
+                    //获得偏移量IV字符串
+                    val ivString = if (keyLine.contains("IV=0x")) keyLine.substringAfter("IV=0x") else ""
+                    //m3u8未定义IV则使用默认的字节数组（0）
+                    val ivBytes = if (ivString.isBlank()) ByteArray(16) else decodeHex(ivString)
+
+                    m3u8Info.tsInfoList.add(TsInfo(keyBytes, ivBytes))
+                } else {
+                    m3u8Info.tsInfoList.add(TsInfo(ByteArray(0), ByteArray(0)))
+                }
+
+                subList.forEach { line ->
+                    //ts文件名拼接
+                    if (!line.startsWith("#")) {
+                        val tsInfo = m3u8Info.tsInfoList.last()
+                        val tsFiles = tsInfo.tsFiles
+                        tsFiles.add(File(dirFile, line))
                     }
                 }
             }
@@ -236,8 +328,8 @@ class M3u8Util {
                 }
                 tsFileList.forEach { file ->
                     if (file.exists()) {
-                        outputFile.appendBytes(file.readBytes())
-                        file.delete()
+                        val bytes = file.readBytes()
+                        outputFile.appendBytes(bytes)
                     }
                 }
 
@@ -246,6 +338,9 @@ class M3u8Util {
             m3u8Info.tsInfoList.forEach {
                 for (tsFile in it.tsFiles) {
                     tsFile.delete()
+                }
+                for (tempTsFile in it.tempTsFiles) {
+                    tempTsFile.delete()
                 }
             }
 
